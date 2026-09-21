@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>屎山代码鉴定所 SHITSCAN</title>
+<style>
+  :root{
+    --bg:#070b12; --card:#0d1420; --card2:#111a2a; --line:#1c2a3f;
+    --fg:#e8eef7; --mut:#8fa1b8; --dim:#5a6b80;
+    --red:#ff2d55; --org:#ffb020; --yel:#ffd93d; --grn:#a3e635; --cyn:#22d3ee;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    background:var(--bg);color:var(--fg);
+    font-family:-apple-system,"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei",sans-serif;
+    min-height:100vh;
+    background-image:
+      linear-gradient(rgba(84,120,180,.05) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(84,120,180,.05) 1px,transparent 1px);
+    background-size:36px 36px;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:28px 18px 60px}
+  /* header */
+  .hd{text-align:center;margin-bottom:8px}
+  .hd .logo{font-size:30px;font-weight:900;letter-spacing:2px}
+  .hd .logo .poo{color:var(--org);text-shadow:0 0 18px rgba(255,176,32,.55)}
+  .hd .en{font-size:11px;color:var(--dim);letter-spacing:6px;margin-top:4px}
+  .hd .slogan{font-size:13px;color:var(--mut);margin-top:10px}
+  .hd .slogan b{color:var(--org)}
+  /* stats strip */
+  .strip{display:flex;gap:10px;margin:18px 0}
+  .stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 8px;text-align:center}
+  .stat .num{font-size:24px;font-weight:800;font-family:"SF Mono",Menlo,Consolas,monospace;color:var(--cyn);text-shadow:0 0 12px rgba(34,211,238,.4)}
+  .stat .lbl{font-size:11px;color:var(--mut);margin-top:2px}
+  /* input card */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+  .card .cap{font-size:13px;color:var(--mut);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+  .card .cap .trust{color:var(--grn);font-size:11px}
+  textarea{
+    width:100%;min-height:200px;background:#0a0f18;border:1px solid var(--line);border-radius:10px;
+    color:#cfe3ff;font-family:"SF Mono",Menlo,Consolas,monospace;font-size:12px;line-height:1.6;
+    padding:12px;resize:vertical;outline:none;
+  }
+  textarea:focus{border-color:#2a4a75}
+  textarea::placeholder{color:#3d4f66}
+  .row{display:flex;gap:10px;margin-top:12px;align-items:center;flex-wrap:wrap}
+  select,input[type=number]{
+    background:#0a0f18;border:1px solid var(--line);border-radius:8px;color:var(--fg);
+    font-size:13px;padding:9px 10px;outline:none;
+  }
+  .rate{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mut)}
+  .rate input{width:76px}
+  .btn{
+    flex:1;min-width:180px;border:none;border-radius:10px;padding:14px;
+    font-size:17px;font-weight:800;letter-spacing:3px;color:#14060a;cursor:pointer;
+    background:linear-gradient(135deg,#ffb020,#ff2d55);
+    box-shadow:0 0 24px rgba(255,45,85,.35);
+    transition:transform .1s;
+  }
+  .btn:active{transform:scale(.97)}
+  .btn:disabled{opacity:.5;cursor:wait}
+  .hint{font-size:11px;color:var(--dim);text-align:center;margin-top:10px}
+  /* loading */
+  .loading{display:none;text-align:center;padding:30px 0}
+  .loading .radar{font-size:40px;animation:spin 1.2s linear infinite;display:inline-block}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .loading .msg{margin-top:12px;color:var(--mut);font-size:14px;min-height:20px}
+  /* result */
+  #result{display:none}
+  .cert{
+    background:linear-gradient(160deg,var(--card2),var(--card));
+    border:1px solid var(--line);border-radius:16px;padding:22px 18px;position:relative;overflow:hidden;
+  }
+  .cert::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--gc,#ff2d55)}
+  .badge{display:flex;align-items:center;gap:16px}
+  .grade{
+    width:86px;height:86px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+    font-size:44px;font-weight:900;font-family:"SF Mono",Menlo,monospace;color:#0a0c10;flex-shrink:0;
+    background:var(--gc,#ff2d55);box-shadow:0 0 28px var(--gc,#ff2d55);
+  }
+  .bt .t1{font-size:20px;font-weight:800}
+  .bt .t2{font-size:12px;color:var(--mut);margin-top:4px}
+  .scoreline{margin:18px 0 6px;display:flex;align-items:baseline;gap:8px}
+  .scoreline .sv{font-size:52px;font-weight:900;font-family:"SF Mono",Menlo,monospace;color:var(--gc);text-shadow:0 0 20px var(--gc)}
+  .scoreline .su{font-size:14px;color:var(--mut)}
+  .verdict{font-size:13px;color:var(--fg);background:rgba(255,255,255,.04);border-left:3px solid var(--gc);padding:8px 10px;border-radius:0 8px 8px 0;margin-bottom:14px}
+  /* dims */
+  .dims{margin:12px 0}
+  .dim{margin-bottom:9px}
+  .dim .dl{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin-bottom:4px}
+  .dim .dl b{color:var(--fg);font-family:"SF Mono",Menlo,monospace}
+  .bar{height:7px;background:#0a0f18;border-radius:4px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;border-radius:4px;background:var(--gc);box-shadow:0 0 8px var(--gc);transition:width 1s ease}
+  /* crimes */
+  .crimes{margin-top:16px}
+  .crimes .ct{font-size:12px;color:var(--red);font-weight:700;letter-spacing:1px;margin-bottom:8px}
+  .crime{background:#0a0f18;border:1px solid #2a1420;border-radius:9px;padding:10px;margin-bottom:8px}
+  .crime .ch{font-size:11px;color:var(--red);font-family:"SF Mono",Menlo,monospace}
+  .crime .cc{font-size:11px;color:#9db3d0;font-family:"SF Mono",Menlo,Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:5px 0}
+  .crime .cz{font-size:12px;color:var(--mut)}
+  /* roasts */
+  .roasts{margin-top:14px}
+  .roast{font-size:13px;color:var(--fg);padding:7px 0;border-bottom:1px dashed var(--line);line-height:1.5}
+  .roast::before{content:"🔥 ";font-size:12px}
+  /* cost */
+  .cost{margin-top:16px;background:rgba(255,176,32,.07);border:1px dashed var(--org);border-radius:12px;padding:14px;text-align:center}
+  .cost .cl{font-size:12px;color:var(--mut)}
+  .cost .cv{font-size:30px;font-weight:900;color:var(--org);font-family:"SF Mono",Menlo,monospace;text-shadow:0 0 14px rgba(255,176,32,.45);margin:4px 0}
+  .cost .cd{font-size:11px;color:var(--dim)}
+  .quip{margin-top:14px;text-align:center;font-size:13px;color:var(--mut);font-style:italic}
+  .certno{margin-top:10px;text-align:center;font-size:11px;color:var(--dim);font-family:"SF Mono",Menlo,monospace;letter-spacing:1px}
+  /* actions */
+  .acts{display:flex;gap:10px;margin-top:16px}
+  .ab{flex:1;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer}
+  .ab.main{background:linear-gradient(135deg,#22d3ee,#4f8cff);color:#03121c;border:none;box-shadow:0 0 20px rgba(34,211,238,.3)}
+  .lb{display:none;margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+  .lb .lt{font-size:12px;color:var(--mut);margin-bottom:8px}
+  .lb .li{display:flex;justify-content:space-between;font-size:12px;padding:5px 0;font-family:"SF Mono",Menlo,monospace;color:var(--mut)}
+  .lb .li b{color:var(--org)}
+  .ft{margin-top:34px;text-align:center;font-size:11px;color:var(--dim);line-height:1.8}
+  /* poster overlay */
+  #ov{display:none;position:fixed;inset:0;background:rgba(2,5,10,.92);z-index:50;padding:20px;overflow:auto}
+  #ov .pv{text-align:center}
+  #ov img{max-width:100%;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.6)}
+  #ov .tip{color:var(--mut);font-size:13px;margin:12px 0}
+  #ov .x{position:fixed;top:14px;right:16px;color:var(--mut);font-size:26px;cursor:pointer;background:none;border:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hd">
+    <div class="logo"><span class="poo">💩</span> 屎山代码鉴定所</div>
+    <div class="en">SHITSCAN · CERTIFICATE CENTER</div>
+    <div class="slogan">粘贴代码 → <b>3 秒出证</b> → 甩到群里让作者社死</div>
+  </div>
+
+  <div class="strip">
+    <div class="stat"><div class="num" id="stTotal">-</div><div class="lbl">累计鉴定(座)</div></div>
+    <div class="stat"><div class="num" id="stMax">-</div><div class="lbl">最高屎山指数</div></div>
+    <div class="stat"><div class="num" id="stCost">-</div><div class="lbl">全人类重构债</div></div>
+  </div>
+
+  <div class="card">
+    <div class="cap"><span>⬇ 粘贴要鉴定的代码</span><span class="trust">🔒 鉴定在内存完成,代码即焚不存档</span></div>
+    <textarea id="code" placeholder="// 把你同事(或自己)那段不敢动的代码贴进来…&#10;// 至少 3 行,一行成不了山,只能算便秘。&#10;function process(data, flag, tmp) {&#10;  ..."></textarea>
+    <div class="row">
+      <select id="lang">
+        <option value="">🪄 自动识别语言</option>
+        <option value="python">Python</option>
+        <option value="javascript">JavaScript</option>
+        <option value="java">Java</option>
+        <option value="go">Go</option>
+        <option value="c">C</option>
+      </select>
+      <div class="rate">时薪 ¥<input type="number" id="rate" value="150" min="20" max="3000"></div>
+    </div>
+    <div class="row">
+      <button class="btn" id="go">开 始 鉴 定</button>
+    </div>
+    <div class="hint">鉴定结果纯属娱乐 · 如与本人实力雷同,纯属巧合</div>
+  </div>
+
+  <div class="loading" id="loading">
+    <span class="radar">📡</span>
+    <div class="msg" id="loadMsg">正在请风水大师看山向…</div>
+  </div>
+
+  <div id="result">
+    <div class="cert" id="cert">
+      <div class="badge">
+        <div class="grade" id="gGrade">S</div>
+        <div class="bt">
+          <div class="t1" id="gTitle">镇店屎山</div>
+          <div class="t2" id="gLang">JavaScript · 214 行</div>
+        </div>
+      </div>
+      <div class="scoreline"><span class="sv" id="gScore">0</span><span class="su">/ 100 屎山指数</span></div>
+      <div class="verdict" id="gVerdict"></div>
+      <div class="dims" id="gDims"></div>
+      <div class="crimes" id="gCrimes"></div>
+      <div class="roasts" id="gRoasts"></div>
+      <div class="cost">
+        <div class="cl">💰 重构报价(按此山残值估算)</div>
+        <div class="cv" id="gCost">¥0</div>
+        <div class="cd" id="gDays">预计 0 人日 · 建议直接掩埋</div>
+      </div>
+      <div class="quip" id="gQuip"></div>
+      <div class="certno" id="gCert"></div>
+    </div>
+    <div class="acts">
+      <button class="ab main" id="bPoster">🖼️ 生成战报图</button>
+      <button class="ab" id="bCopy">📋 复制战报</button>
+      <button class="ab" id="bAgain">🔄 再来</button>
+    </div>
+    <div class="lb" id="lb">
+      <div class="lt">🏆 屎山榜 TOP10(仅记录等级指标,永不存代码)</div>
+      <div id="lbList"></div>
+    </div>
+  </div>
+
+  <div class="ft">
+    屎山代码鉴定所 · <b>小薅薅</b> 出品<br>
+    本工具全部鉴定在服务器内存完成,代码即用即焚,只留下等级指标用于排行榜<br>
+    结果仅供娱乐,请勿用于绩效考评(虽然你想)
+  </div>
+</div>
+
+<div id="ov">
+  <button class="x" id="ovX">✕</button>
+  <div class="pv">
+    <img id="posterImg" alt="战报图">
+    <div class="tip">📱 长按图片保存,发群即裂变</div>
+  </div>
+</div>
+
+<script>
+var $=function(s){return document.querySelector(s)};
+var LAST=null;
+var LOADMSGS=["正在请风水大师看山向…","考古队入场中…","正在评估发酵程度…","扫描祖传代码菌丝…","正在给嵌套箭头计里程…","检测 Ctrl+C 指纹…"];
+var LANGCN={python:"Python",javascript:"JavaScript",java:"Java",go:"Go",c:"C"};
+
+function fmt(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",")}
+
+function loadStats(){
+  fetch("/api/stats").then(function(r){return r.json()}).then(function(d){
+    $("#stTotal").textContent=fmt(d.total);
+  });
+  fetch("/api/leaderboard").then(function(r){return r.json()}).then(function(b){
+      if(b.board.length){
+        $("#stMax").textContent=b.board[0].score;
+        var tc=0;b.board.forEach(function(r){tc+=r.cost});
+        $("#stCost").textContent=tc>=10000?(tc/10000).toFixed(1)+"万":fmt(tc);
+      }else{
+        $("#stMax").textContent="待定";$("#stCost").textContent="¥0";
+      }
+  });
+}
+
+function setLoading(on){
+  $("#loading").style.display=on?"block":"none";
+  $("#go").disabled=on;
+  if(on){
+    var i=0;
+    $("#loadMsg").textContent=LOADMSGS[0];
+    window._lt=setInterval(function(){i=(i+1)%LOADMSGS.length;$("#loadMsg").textContent=LOADMSGS[i]},700);
+  }else{clearInterval(window._lt)}
+}
+
+$("#go").onclick=function(){
+  var code=$("#code").value;
+  if(code.trim().length<10){$("#code").placeholder="真贴啊,别拿空气鉴定——粘贴至少 3 行代码!";$("#code").focus();return}
+  setLoading(true);
+  $("#result").style.display="none";
+  fetch("/api/generate",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({code:code,lang:$("#lang").value||null,rate:parseInt($("#rate").value)||150})
+  }).then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d}})}).then(function(res){
+    setLoading(false);
+    if(!res.ok||res.d.error){alert(res.d.error||"鉴定失败,稍后再试");return}
+    LAST=res.d;render(res.d);
+  }).catch(function(){setLoading(false);alert("网络开小差了,重试一下")});
+};
+
+function countUp(el,to){
+  var t0=null;
+  function step(t){if(!t0)t0=t;var p=Math.min((t-t0)/1100,1);p=1-Math.pow(1-p,3);
+    el.textContent=Math.round(to*p);if(p<1)requestAnimationFrame(step)}
+  requestAnimationFrame(step);
+}
+
+function render(r){
+  r.certDate=new Date().toISOString().slice(0,10);
+  $("#result").style.display="block";
+  $("#cert").style.setProperty("--gc",r.color);
+  $("#gGrade").textContent=r.grade;
+  $("#gTitle").textContent="「"+r.title+"」";
+  $("#gLang").textContent=LANGCN[r.meta.lang]+" · "+r.meta.loc+" 行有效代码";
+  countUp($("#gScore"),r.score);
+  $("#gVerdict").textContent=r.verdict;
+  var dims=$("#gDims");dims.innerHTML="";
+  Object.keys(r.dims).forEach(function(k){
+    var v=r.dims[k];
+    var d=document.createElement("div");d.className="dim";
+    d.innerHTML='<div class="dl"><span>'+k+'</span><b>'+v+'</b></div><div class="bar"><i></i></div>';
+    dims.appendChild(d);
+    setTimeout(function(){d.querySelector("i").style.width=v+"%"},60);
+  });
+  var cr=$("#gCrimes");
+  if(r.crimes.length){
+    cr.innerHTML='<div class="ct">🔍 罪证现场(部分)</div>';
+    r.crimes.forEach(function(c){
+      var d=document.createElement("div");d.className="crime";
+      d.innerHTML='<div class="ch">#'+(c.no||"-")+' ['+c.type+']</div><div class="cc">'+esc(c.text)+'</div><div class="cz">'+esc(c.roast)+'</div>';
+      cr.appendChild(d);
+    });
+  }else{cr.innerHTML=""}
+  var ro=$("#gRoasts");ro.innerHTML="";
+  r.roasts.forEach(function(t){
+    if(!t)return;var d=document.createElement("div");d.className="roast";d.textContent=t;ro.appendChild(d);
+  });
+  $("#gCost").textContent="¥"+fmt(r.cost);
+  $("#gDays").textContent="预计 "+r.mandays+" 人日 · "+(r.score>=75?"重构不如推倒重来":"趁早重构还能抢救");
+  $("#gQuip").textContent=r.quip;
+  $("#gCert").textContent="NO."+r.id.slice(0,8).toUpperCase()+" · SHITSCAN CERTIFIED";
+  setTimeout(function(){$("#result").scrollIntoView({behavior:"smooth",block:"start"})},80);
+  loadBoard();
+}
+
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+
+function loadBoard(){
+  fetch("/api/leaderboard").then(function(r){return r.json()}).then(function(d){
+    if(!d.board.length)return;
+    var el=$("#lbList");el.innerHTML="";
+    d.board.forEach(function(r,i){
+      var li=document.createElement("div");li.className="li";
+      li.innerHTML="<span>"+(i+1)+". "+r.grade+"级「"+esc(r.title)+"」</span><span>"+r.score+"分 / ¥"+fmt(r.cost)+"</span>";
+      el.appendChild(li);
+    });
+    $("#lb").style.display="block";
+  });
+}
+
+$("#bAgain").onclick=function(){$("#result").style.display="none";$("#code").value="";$("#code").focus();window.scrollTo({top:0,behavior:"smooth"})};
+
+$("#bCopy").onclick=function(){
+  if(!LAST)return;
+  var t="💩【屎山鉴定战报】我的代码被鉴定为 "+LAST.grade+" 级「"+LAST.title+"」\n"+
+    "屎山指数 "+LAST.score+"/100,重构报价 ¥"+fmt(LAST.cost)+"("+LAST.mandays+" 人日)\n"+
+    "「"+LAST.verdict+"」\n—— 你的代码敢来鉴定吗?";
+  copyText(t,$("#bCopy"),"✅ 已复制,去粘贴");
+};
+
+function copyText(t,btn,okMsg){
+  var done=function(){var o=btn.textContent;btn.textContent=okMsg;setTimeout(function(){btn.textContent=o},1600)};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done)}
+  else{var ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);done()}
+}
+
+/* ---------- 战报海报 canvas 750x1334 ---------- */
+$("#bPoster").onclick=function(){
+  if(!LAST)return;
+  var r=LAST,c=$("#posterImg");var cv=document.createElement("canvas");cv.width=750;cv.height=1334;
+  var x=cv.getContext("2d");
+  x.fillStyle="#070b12";x.fillRect(0,0,750,1334);
+  x.strokeStyle="rgba(84,120,180,.08)";x.lineWidth=1;
+  for(var i=0;i<750;i+=36){x.beginPath();x.moveTo(i,0);x.lineTo(i,1334);x.stroke()}
+  for(var j=0;j<1334;j+=36){x.beginPath();x.moveTo(0,j);x.lineTo(750,j);x.stroke()}
+  x.textAlign="center";
+  x.fillStyle="#e8eef7";x.font="900 52px -apple-system,'PingFang SC',sans-serif";
+  x.fillText("💩 屎山代码鉴定所",375,120);
+  x.fillStyle="#5a6b80";x.font="24px Menlo,monospace";x.fillText("S H I T S C A N   C E R T I F I E D",375,158);
+  x.globalAlpha=.9;x.fillStyle=r.color;x.font="900 230px Menlo,monospace";
+  x.shadowColor=r.color;x.shadowBlur=70;x.fillText(r.grade,375,430);x.shadowBlur=0;x.globalAlpha=1;
+  x.fillStyle="#e8eef7";x.font="800 44px -apple-system,'PingFang SC',sans-serif";
+  x.fillText("「"+r.title+"」",375,510);
+  x.fillStyle=r.color;x.font="900 120px Menlo,monospace";
+  x.shadowColor=r.color;x.shadowBlur=30;x.fillText(r.score+"",375,650);x.shadowBlur=0;
+  x.fillStyle="#8fa1b8";x.font="26px -apple-system,sans-serif";x.fillText("/ 100 屎山指数",375,692);
+  var rows=[["语言规模",LANGCN[r.meta.lang]+" · "+r.meta.loc+" 行"],["最深嵌套",r.meta.max_nest+" 层"],["重构报价","¥"+fmt(r.cost)]];
+  var y=780;
+  rows.forEach(function(row){
+    x.textAlign="left";x.fillStyle="#5a6b80";x.font="26px -apple-system,sans-serif";x.fillText(row[0],90,y);
+    x.textAlign="right";x.fillStyle="#e8eef7";x.font="800 32px Menlo,-apple-system,sans-serif";x.fillText(row[1],660,y);
+    y+=74;
+  });
+  x.textAlign="center";
+  wrap(x,r.verdict,375,y+30,620,30,"26px -apple-system,'PingFang SC',sans-serif","#c6d4e6");
+  x.fillStyle="#5a6b80";x.font="22px Menlo,monospace";
+  x.fillText("NO."+r.id.slice(0,8).toUpperCase()+" · "+r.certDate,375,1210);
+  x.fillStyle="#ffb020";x.font="28px -apple-system,sans-serif";
+  x.fillText("转发即认证 · 你敢来鉴定吗?",375,1270);
+  c.src=cv.toDataURL("image/png");
+  $("#ov").style.display="block";
+};
+function wrap(x,text,cx,y,maxW,lh,font,color){
+  x.font=font;x.fillStyle=color;
+  var line="",yy=y;
+  for(var i=0;i<text.length;i++){
+    var t=line+text[i];
+    if(x.measureText(t).width>maxW){x.fillText(line,cx,yy);line=text[i];yy+=lh}
+    else{line=t}
+  }
+  if(line)x.fillText(line,cx,yy);
+  return yy;
+}
+$("#ovX").onclick=function(){$("#ov").style.display="none"};
+$("#ov").onclick=function(e){if(e.target.id==="ov")$("#ov").style.display="none"};
+
+/* 证书日期后补 */
+var _origRender=render;
+render=function(r){r.certDate=new Date().toISOString().slice(0,10);_origRender(r)};
+
+loadStats();loadBoard();
+</script>
+</body>
+</html>
