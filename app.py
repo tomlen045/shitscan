@@ -222,7 +222,7 @@ def analyze(code, lang=None, rate=HOURLY_RATE):
         "grade": title[1], "title": title[2], "verdict": title[3], "color": title[4],
         "score": score, "quip": quip, "dims": dims, "crimes": crimes,
         "mandays": mandays, "cost": cost, "roasts": roast_lines,
-        "meta": {"lang": lang, "loc": n_code, "max_nest": max_nest, "max_len": max_len,
+        "meta": {"lang": lang, "loc": n_code, "chars": len(code), "max_nest": max_nest, "max_len": max_len,
                  "longest_func": longest_func, "longest_func_lines": lf_len,
                  "dup_pct": dup_pct, "bad_names": len(bad_names), "todos": len(todos),
                  "magic_nums": len(magic_nums), "comment_ratio": round(comment_ratio, 1),

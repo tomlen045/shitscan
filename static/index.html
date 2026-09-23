@@ -143,7 +143,7 @@
 
   <div class="card">
     <div class="cap"><span>⬇ 粘贴要鉴定的代码</span><span class="trust">🔒 鉴定在内存完成,代码即焚不存档</span></div>
-    <textarea id="code" placeholder="// 把你同事(或自己)那段不敢动的代码贴进来…&#10;// 至少 3 行,一行成不了山,只能算便秘。&#10;function process(data, flag, tmp) {&#10;  ..."></textarea>
+    <textarea id="code" placeholder="// 把你同事(或自己)那段不敢动的代码贴进来…&#10;// 至少 30 个字符,统一按字符数算,汉字也是字。&#10;function process(data, flag, tmp) {&#10;  ..."></textarea>
     <div class="row">
       <select id="lang">
         <option value="">🪄 自动识别语言</option>
@@ -172,7 +172,7 @@
         <div class="grade" id="gGrade">S</div>
         <div class="bt">
           <div class="t1" id="gTitle">镇店屎山</div>
-          <div class="t2" id="gLang">JavaScript · 214 行</div>
+          <div class="t2" id="gLang">JavaScript · 214 行 · 2048 字符</div>
         </div>
       </div>
       <div class="scoreline"><span class="sv" id="gScore">0</span><span class="su">/ 100 屎山指数</span></div>
@@ -249,7 +249,7 @@ function setLoading(on){
 
 $("#go").onclick=function(){
   var code=$("#code").value;
-  if(code.trim().length<10){$("#code").placeholder="真贴啊,别拿空气鉴定——粘贴至少 3 行代码!";$("#code").focus();return}
+  if(code.trim().length<30){$("#code").placeholder="至少贴 30 个字符的代码,统一按字符数算——别拿空气鉴定!";$("#code").focus();return}
   setLoading(true);
   $("#result").style.display="none";
   fetch("/api/generate",{
@@ -276,7 +276,7 @@ function render(r){
   $("#cert").style.setProperty("--gc",r.color);
   $("#gGrade").textContent=r.grade;
   $("#gTitle").textContent="「"+r.title+"」";
-  $("#gLang").textContent=LANGCN[r.meta.lang]+" · "+r.meta.loc+" 行有效代码";
+  $("#gLang").textContent=LANGCN[r.meta.lang]+" · "+r.meta.loc+" 行有效代码 · 共 "+r.meta.chars+" 字符";
   countUp($("#gScore"),r.score);
   $("#gVerdict").textContent=r.verdict;
   var dims=$("#gDims");dims.innerHTML="";
@@ -359,7 +359,7 @@ $("#bPoster").onclick=function(){
   x.fillStyle=r.color;x.font="900 120px Menlo,monospace";
   x.shadowColor=r.color;x.shadowBlur=30;x.fillText(r.score+"",375,650);x.shadowBlur=0;
   x.fillStyle="#8fa1b8";x.font="26px -apple-system,sans-serif";x.fillText("/ 100 屎山指数",375,692);
-  var rows=[["语言规模",LANGCN[r.meta.lang]+" · "+r.meta.loc+" 行"],["最深嵌套",r.meta.max_nest+" 层"],["重构报价","¥"+fmt(r.cost)]];
+  var rows=[["语言规模",LANGCN[r.meta.lang]+" · "+r.meta.loc+" 行 · "+r.meta.chars+" 字符"],["最深嵌套",r.meta.max_nest+" 层"],["重构报价","¥"+fmt(r.cost)]];
   var y=780;
   rows.forEach(function(row){
     x.textAlign="left";x.fillStyle="#5a6b80";x.font="26px -apple-system,sans-serif";x.fillText(row[0],90,y);
