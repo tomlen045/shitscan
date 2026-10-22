@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>屎山代码鉴定所 · 浏览器离线版</title>
+<style>
+:root{color-scheme:dark;--bg:#090f18;--panel:#111c2b;--line:#27374a;--ink:#f6f5ee;--muted:#a9b5c5;--yellow:#ffe157;--cyan:#71e8df}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.6}button,textarea{font:inherit}button,a{touch-action:manipulation}button{cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:10px 15px;background:#182637;color:var(--ink);font-weight:650}button:hover{border-color:var(--cyan)}button:focus-visible,a:focus-visible,textarea:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}button:disabled{opacity:.45;cursor:not-allowed}a{color:var(--cyan)}.wrap{max-width:1200px;margin:auto;padding:30px 32px 50px}header{display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:13px;letter-spacing:.07em}.brand{font-weight:850;font-size:17px}.stamp{color:var(--cyan);border:1px solid #2e655f;padding:5px 12px;border-radius:30px}.hero{padding:48px 0 30px;max-width:940px}.eyebrow{color:var(--yellow);font-size:13px;font-weight:750;letter-spacing:.12em}.hero h1{font-size:clamp(34px,4.9vw,58px);line-height:1.16;letter-spacing:-.035em;margin:14px 0 20px}.hero h1 span{color:var(--yellow)}.hero p{color:var(--muted);font-size:17px;max-width:700px;margin:0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}.panel{border:1px solid var(--line);background:var(--panel);border-radius:20px;padding:24px}.panel h2{font-size:19px;margin:0}.heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:17px}.small{font-size:12px;color:var(--muted)}label{display:block;color:var(--muted);font-size:13px;margin:16px 0 8px}textarea{width:100%;resize:vertical;min-height:285px;max-height:600px;padding:16px;border:1px solid var(--line);border-radius:12px;background:#080f1a;color:#dbe8f9;line-height:1.65;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px}.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}.primary{background:var(--yellow);border-color:var(--yellow);color:#11151d;flex:1;font-size:16px}.input-foot{display:flex;justify-content:space-between;gap:12px;margin-top:6px}.notice{font-size:12px;color:var(--muted);margin:14px 0 0}.empty{min-height:375px;display:grid;place-content:center;text-align:center;color:var(--muted);gap:9px}.empty strong{font-size:22px;color:var(--ink)}.empty .glyph{font-size:75px;line-height:1;color:#33465f}.result-top{display:flex;align-items:center;gap:20px;border-bottom:1px solid var(--line);padding-bottom:21px;margin-bottom:22px}.score{font-size:76px;font-weight:900;color:var(--yellow);letter-spacing:-.06em;line-height:1}.score small{font-size:18px;color:var(--muted);letter-spacing:0}.grade{font-size:26px;font-weight:800}.dimensions{display:grid;grid-template-columns:1fr 1fr;gap:16px}.dimension .label{display:flex;justify-content:space-between;color:#cbd7e5;font-size:13px;margin-bottom:6px}.track{height:5px;border-radius:10px;background:#253449;overflow:hidden}.fill{height:100%;background:var(--cyan)}.findings{padding-left:19px;font-size:13px;color:#c2cfe0;margin-top:20px}.findings li{margin-bottom:8px}details{margin-top:20px;border-top:1px solid var(--line);padding-top:15px;color:var(--muted);font-size:13px}summary{cursor:pointer;color:var(--ink)}.rule-list{padding-left:18px}.status{min-height:22px;font-size:13px;color:var(--cyan);margin-top:8px}.footer{display:flex;justify-content:space-between;gap:18px;border-top:1px solid var(--line);padding-top:22px;margin-top:30px;color:var(--muted);font-size:12px}.result-actions button{flex:1}.result-meta{font-size:12px;color:var(--muted);margin-top:5px}[hidden]{display:none!important}@media(max-width:760px){.wrap{padding:20px 18px 32px}.grid{grid-template-columns:1fr}.hero{padding:33px 0 25px}.hero h1{font-size:37px}.hero p{font-size:15px}.panel{padding:20px}.footer{flex-direction:column}.stamp{font-size:11px;padding:4px 8px}.brand{font-size:14px}textarea{min-height:230px}.score{font-size:65px}.hero h1 br{display:none}}@media(prefers-reduced-motion:no-preference){button{transition:background .15s,border-color .15s}}
+</style>
+</head>
+<body><div class="wrap">
+<header><div class="brand">SHITSCAN / 屎山鉴定所</div><div class="stamp">浏览器离线版 · v1.0</div></header>
+<section class="hero"><div class="eyebrow">肥肠的实用工具箱 · CODE, WITH A SENSE OF HUMOR</div><h1>这段代码，<br>到底<span>有多难接手？</span></h1><p>贴一段代码，看六项规则信号，生成一张自嘲证书。<br>不需要安装 Python，代码就在你的浏览器里处理。</p></section>
+<main class="grid">
+<section class="panel"><div class="heading"><h2>01 / 放入代码</h2><span class="small">无需登录 · 不上传</span></div>
+<div class="actions"><button id="messy">试试「祖传代码」</button><button id="clean">看看「整理之后」</button></div>
+<label for="code">支持任意文本代码；规则对 JavaScript / Python 更适用</label>
+<textarea id="code" maxlength="100000" spellcheck="false" autocomplete="off" placeholder="粘贴至少 30 个字符的代码，或者先试试上面的示例。不要粘贴真实密钥。"></textarea>
+<div class="input-foot"><span class="small" id="count">0 个字符</span><span class="small">最多 100,000 字符</span></div>
+<div class="actions"><button class="primary" id="analyze">生成我的鉴定</button><button id="clear">清空</button></div>
+<p class="status" id="status" role="status" aria-live="polite"></p>
+<p class="notice">本页无网络请求，不保存代码。关闭或刷新后内容清空。证书只含分数、等级与数量统计，不含代码原文。</p>
+</section>
+<section class="panel" id="result-panel"><div class="heading"><h2>02 / 你的鉴定证书</h2><span class="small">规则可解释</span></div>
+<div id="empty" class="empty"><div class="glyph">{ ? }</div><strong>先试一段，再看结果</strong><span>分数越高，命中的规则信号越多。</span><span class="small">娱乐自检，不代表作者水平或实际维护成本。</span></div>
+<div id="result" hidden><div class="result-top"><div class="score"><span id="score">0</span><small> /100</small></div><div><div class="grade" id="grade"></div><div class="result-meta" id="result-meta"></div><div class="small">娱乐指数 · 不是真实质量结论</div></div></div><div id="dimensions" class="dimensions"></div><ul id="findings" class="findings"></ul><div class="actions result-actions"><button id="save">保存证书 PNG</button><button id="copy">复制结果摘要</button></div></div>
+<details><summary>这六项分数怎么来的？</summary><p>仅使用可见文本规则，没有大模型、没有语法树，也不会执行代码。</p><ul class="rule-list"><li>分支密度：每行平均分支关键字数量，权重 20%。</li><li>嵌套信号：大括号深度或按 4 空格估算的缩进层数，权重 25%。</li><li>临时命名：指定短名称在声明/函数名里的出现次数，权重 10%。</li><li>待办标记：TODO / FIXME / HACK 的数量，权重 10%。</li><li>重复行：规范化后有效重复行的比例，权重 20%。</li><li>超长行：超过 100 字符的行占比，权重 15%。</li></ul><p>字符串、注释、格式风格会影响结果；重复代码不一定有问题，分数低也不代表安全。离线版与旧版 Python 规则不同，分数不能直接比较。</p></details>
+</section></main>
+<footer class="footer"><span>只拿自己的代码自嘲；不要据此评价同事或做人员考核。</span><span>开源：<a href="https://github.com/tomlen045/shitscan" target="_blank" rel="noopener noreferrer">tomlen045/shitscan ↗</a> · MIT</span></footer>
+</div>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const samples={messy:`// TODO: 等业务稳定了再改
+function process(data, flag) {
+    let tmp = [];
+    if (data) {
+        for (let x of data) {
+            if (flag) {
+                if (x.active) {
+                    if (x.price > 0) {
+                        // FIXME: 这里还有边界情况
+                        console.log("收到订单，准备处理，检查库存，记录日志，通知用户，等待下一次版本更新，再补充更完整的异常处理。");
+                        tmp.push(x.price * x.quantity);
+                        console.log("处理完成");
+                        console.log("处理完成");
+                        console.log("处理完成");
+                    }
+                }
+            }
+        }
+    }
+    // HACK: 先这样上线
+    return tmp;
+}`,clean:`function activeOrderTotals(orders, enabled) {
+  if (!enabled || !orders) return [];
+  return orders
+    .filter(order => order.active && order.price > 0)
+    .map(order => order.price * order.quantity);
+}`};
+let current=null;
+const dimensions=[['branch','分支密度',.2],['depth','嵌套信号',.25],['naming','临时命名',.1],['todo','待办标记',.1],['repeat','重复行',.2],['length','超长行',.15]];
+const cap=n=>Math.round(Math.min(100,Math.max(0,n)));
+function inspectCode(code){
+  const chars=Array.from(code).length;
+  if(chars<30||!code.trim())throw new Error('请放入至少 30 个字符的代码，或点击一个示例。');
+  if(chars>100000)throw new Error('代码超过 100,000 字符，请选择较短片段。');
+  const lines=code.split(/\r\n|\r|\n/), nonempty=lines.filter(x=>x.trim());
+  const branches=(code.match(/\b(if|else|for|while|case|catch|switch|elif)\b|&&|\|\|/g)||[]).length;
+  let level=0,maxDepth=0;
+  for(const ch of code){if(ch==='{')maxDepth=Math.max(maxDepth,++level);else if(ch==='}')level=Math.max(0,level-1);}
+  const indent=Math.max(0,...lines.map(l=>Math.floor((l.match(/^[\t ]*/)[0].replace(/\t/g,'    ').length)/4)));
+  maxDepth=Math.max(maxDepth,indent);
+  const names=(code.match(/\b(?:let|const|var|def|function)\s+(?:tmp|temp|foo|bar|data|[abxy])\b/g)||[]).length;
+  const todos=(code.match(/\b(?:TODO|FIXME|HACK)\b/gi)||[]).length;
+  const normalized=nonempty.map(x=>x.trim().replace(/\s+/g,' ')).filter(x=>x.length>12&&!/^(\/\/|#|\*|\/\*)/.test(x));
+  const duplicate=Math.max(0,normalized.length-new Set(normalized).size);
+  const longLines=lines.map((l,i)=>({line:i+1,length:Array.from(l).length})).filter(l=>l.length>100);
+  const values={branch:cap(branches/Math.max(1,nonempty.length)*160),depth:cap((maxDepth-1)*18),naming:cap(names*18),todo:cap(todos*22),repeat:cap(duplicate/Math.max(1,normalized.length)*220),length:cap(longLines.length/Math.max(1,nonempty.length)*300)};
+  const score=Math.round(dimensions.reduce((sum,[k,label,w])=>sum+values[k]*w,0));
+  const grade=score>=75?'祖传代码博物馆':score>=50?'接手先深呼吸':score>=25?'有点年头了':'看起来挺清爽';
+  const notes=[];
+  if(maxDepth>2)notes.push(`检测到约 ${maxDepth} 层嵌套/缩进信号，可以看看是否适合提前返回。`);
+  if(duplicate)notes.push(`发现 ${duplicate} 条重复有效行，确认它们是否确有重复职责。`);
+  if(todos)notes.push(`找到 ${todos} 个待办标记，检查是否仍然有效。`);
+  if(names)notes.push(`有 ${names} 处临时命名信号，看看名字能否说明用途。`);
+  if(longLines.length)notes.push(`第 ${longLines.slice(0,4).map(x=>x.line).join('、')} 行超过 100 字符，可按职责拆开阅读。`);
+  if(!notes.length)notes.push('本次命中的信号较少。仍应结合运行结果、测试与上下文判断。');
+  return {version:'offline-1.0',score,grade,chars,lines:lines.length,values,notes};
+}
+function summary(r){return `SHITSCAN 浏览器离线版\n娱乐指数：${r.score}/100 · ${r.grade}\n${r.lines} 行 / ${r.chars} 字符\n`+dimensions.map(([k,n])=>`${n}：${r.values[k]}/100`).join('\n')+'\n仅供娱乐自检，不代表实际代码质量。\nhttps://github.com/tomlen045/shitscan';}
+function invalidate(){current=null;$('result').hidden=true;$('empty').hidden=false;$('count').textContent=Array.from($('code').value).length.toLocaleString()+' 个字符';$('status').textContent='';}
+function show(r){current=r;$('empty').hidden=true;$('result').hidden=false;$('score').textContent=r.score;$('grade').textContent=r.grade;$('result-meta').textContent=`${r.lines} 行 / ${r.chars.toLocaleString()} 字符 · 离线规则 v1.0`;$('dimensions').replaceChildren();
+  for(const[k,label]of dimensions){const cell=document.createElement('div');cell.className='dimension';const title=document.createElement('div');title.className='label';const name=document.createElement('span'),value=document.createElement('span');name.textContent=label;value.textContent=r.values[k];title.append(name,value);const track=document.createElement('div'),fill=document.createElement('div');track.className='track';fill.className='fill';fill.style.width=r.values[k]+'%';track.append(fill);cell.append(title,track);$('dimensions').append(cell);}
+  $('findings').replaceChildren(...r.notes.map(note=>{const li=document.createElement('li');li.textContent=note;return li;}));$('status').textContent='已完成。代码留在本页，证书不含原文。';
+}
+$('code').addEventListener('input',invalidate);
+for(const key of ['messy','clean'])$(key).addEventListener('click',()=>{$('code').value=samples[key];invalidate();show(inspectCode(samples[key]));});
+$('analyze').addEventListener('click',()=>{try{show(inspectCode($('code').value));}catch(error){$('status').textContent=error.message;}});
+$('clear').addEventListener('click',()=>{$('code').value='';invalidate();$('code').focus();});
+$('copy').addEventListener('click',async()=>{if(!current)return;const text=summary(current);try{await navigator.clipboard.writeText(text);$('status').textContent='已复制不含代码的结果摘要。';}catch(error){const area=document.createElement('textarea');area.value=text;area.style.position='fixed';area.style.top='-9999px';document.body.append(area);area.select();const ok=document.execCommand('copy');area.remove();$('status').textContent=ok?'已复制不含代码的结果摘要。':'浏览器不允许复制，请改用保存证书。';}});
+function drawCertificate(r){const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1440;const c=canvas.getContext('2d');c.fillStyle='#090f18';c.fillRect(0,0,1080,1440);c.strokeStyle='#2b3e56';c.lineWidth=3;c.strokeRect(48,48,984,1344);const text=(s,x,y,font,color)=>{c.font=font;c.fillStyle=color;c.fillText(s,x,y);};text('SHITSCAN / 肥肠的实用工具箱',90,116,'600 24px sans-serif','#71e8df');text('我的代码',90,235,'900 82px sans-serif','#f6f5ee');text('有点故事',90,340,'900 82px sans-serif','#ffe157');text(r.score.toString(),85,580,'900 220px sans-serif','#ffe157');text('/ 100',400,575,'500 48px sans-serif','#a9b5c5');text(r.grade,90,670,'800 48px sans-serif','#f6f5ee');text(`${r.lines} 行 · ${r.chars} 字符 · 娱乐指数`,90,728,'400 28px sans-serif','#a9b5c5');dimensions.forEach(([key,label],i)=>{const y=820+i*67;text(label,90,y,'500 28px sans-serif','#dbe8f9');c.fillStyle='#253449';c.fillRect(280,y-20,600,10);c.fillStyle='#71e8df';c.fillRect(280,y-20,600*r.values[key]/100,10);text(String(r.values[key]),920,y,'600 28px sans-serif','#f6f5ee');});text('浏览器离线处理 · 证书不含代码原文',90,1278,'500 26px sans-serif','#71e8df');text('娱乐自检，不代表作者水平或实际代码质量。',90,1323,'400 23px sans-serif','#a9b5c5');text('github.com/tomlen045/shitscan · offline v1.0',90,1360,'400 20px sans-serif','#a9b5c5');return canvas;}
+$('save').addEventListener('click',()=>{if(!current)return;const canvas=drawCertificate(current);canvas.toBlob(blob=>{if(!blob){$('status').textContent='图片导出失败，请尝试复制摘要。';return;}const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='shitscan-certificate.png';a.click();setTimeout(()=>URL.revokeObjectURL(url),30000);$('status').textContent='证书已生成；若手机未自动保存，请在浏览器下载记录中打开。';},'image/png');});
+</script></body></html>

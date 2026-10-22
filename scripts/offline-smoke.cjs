@@ -1,0 +1,54 @@
+// Run with Node.js and Playwright installed: node scripts/offline-smoke.cjs
+const { chromium } = require('playwright');
+const { strict: assert } = require('node:assert');
+const path = require('node:path');
+const fs = require('node:fs');
+const { pathToFileURL } = require('node:url');
+(async () => {
+  const browser = await chromium.launch({ headless: true, executablePath: process.env.SHITSCAN_BROWSER || undefined });
+  const context = await browser.newContext({ acceptDownloads: true, viewport: { width: 1280, height: 1080 } });
+  await context.setOffline(true);
+  const page = await context.newPage();
+  const requests = [], errors = [];
+  page.on('request', r => { if (/^https?:/.test(r.url())) requests.push(r.url()); });
+  page.on('pageerror', e => errors.push(e.message));
+  await page.goto(pathToFileURL(path.resolve(__dirname, '../offline.html')).href);
+  await page.locator('#analyze').click();
+  assert.match(await page.locator('#status').innerText(), /至少 30/);
+  await page.locator('#messy').click();
+  const messy = Number(await page.locator('#score').innerText());
+  await page.locator('#clean').click();
+  const clean = Number(await page.locator('#score').innerText());
+  assert(messy > clean && messy <= 100 && clean >= 0);
+  const boundary = await page.evaluate(() => {
+    let tooLong = false;
+    try { inspectCode('x'.repeat(100001)); } catch { tooLong = true; }
+    return { tooLong, unicode: inspectCode('中😀'.repeat(15)).chars };
+  });
+  assert.equal(boundary.tooLong, true);
+  assert.equal(boundary.unicode, 30);
+  await page.locator('#code').fill('<img src=x onerror="window.injected=true">'.repeat(3));
+  assert(await page.locator('#result').isHidden());
+  await page.locator('#analyze').click();
+  assert.equal(await page.evaluate(() => window.injected), undefined);
+  assert.equal(await page.locator('#result img').count(), 0);
+  await page.locator('#messy').click();
+  const downloadPromise = page.waitForEvent('download');
+  await page.locator('#save').click();
+  const download = await downloadPromise;
+  const exportPath = path.resolve(__dirname, '../docs/offline-certificate.png');
+  await download.saveAs(exportPath);
+  assert.equal(fs.readFileSync(exportPath).subarray(1, 4).toString(), 'PNG');
+  await page.screenshot({ path: path.resolve(__dirname, '../docs/offline-desktop.png'), fullPage: true });
+  await page.setViewportSize({ width: 390, height: 844 });
+  assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+  await page.screenshot({ path: path.resolve(__dirname, '../docs/offline-mobile.png'), fullPage: true });
+  await page.locator('#clear').click();
+  assert.equal(await page.locator('#code').inputValue(), '');
+  assert(await page.locator('#result').isHidden());
+  assert.equal(await page.evaluate(() => localStorage.length), 0);
+  assert.deepEqual(requests, []);
+  assert.deepEqual(errors, []);
+  console.log(JSON.stringify({ checks: ['empty input', 'sample ordering', 'unicode and length bounds', 'safe text rendering', 'PNG export', '390px mobile layout', 'clear and no storage', 'offline without network or JS errors'], messy, clean, requests, errors }));
+  await browser.close();
+})().catch(e => { console.error(e); process.exitCode = 1; });
